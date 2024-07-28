@@ -49,7 +49,7 @@
         </q-list>
       </q-scroll-area>
 
-      <q-img class="absolute-top" src="/images/road.jpg" style="height: 192px">
+      <q-img v-if="isLogin" class="absolute-top" src="/images/road.jpg" style="height: 192px">
         <div class="absolute-bottom bg-transparent">
           <q-avatar
             size="56px"
@@ -82,10 +82,19 @@ import { date } from "quasar";
 import LogoutBtn from "src/components/LogoutBtn.vue";
 import { mapState } from "pinia";
 import useUser from "src/stores/useUser";
+// import { socket } from "boot/socket";
+// import useSocketListner from "src/composables/useSocketListner";
 
 export default defineComponent({
   name: "MainLayout",
   components: { LogoutBtn },
+	// setup() {
+  //   useSocketListner(socket, {
+  //     "users": (users) => {
+  //       console.log("users listen", users);
+  //     },
+  //   });
+  // },
   data() {
     return {
       leftDrawerOpen: false,
@@ -104,7 +113,7 @@ export default defineComponent({
     };
   },
   computed: {
-		...mapState(useUser, ['user']),
+		...mapState(useUser, ['user', 'isLogin']),
     todayDate() {
       // 영상 10분 30초 까지 봤음
       const timeStamp = Date.now();

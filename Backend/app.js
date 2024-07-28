@@ -51,5 +51,5 @@ koaAutoRouter(app, '/router', '/api');
 app.use(require('./middleware/NotFound'));
 
 app.listen(PORT, () => {
-	console.log(`http://localhost:${PORT}`);
+	console.log(`http://server.bnb.com:${PORT}`);
 });

@@ -2,7 +2,8 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 import { Notify } from 'quasar'
 
-const api = axios.create({ baseURL: 'http://localhost:5000' });
+// console.log("env.API", process.env.API);
+const api = axios.create({ baseURL: process.env.API });
 
 api.interceptors.response.use(function (response) {
 	// 2xx 범위에 있는 상태 코드는 이 함수를 트리거 합니다.
