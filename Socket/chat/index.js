@@ -12,11 +12,17 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
 	console.log(socket.userId, socket.id);
 	// fetch existing users
+
+	socket.join(socket.userId); // 아이디로 방에 입장
+
 	const users = [];
 	for (let [id, socket] of io.sockets) {
-		users.push({
-			userId: socket.userId,
-		});
+		const find = users.find(u => u.userId == socket.userId);
+		if (!find) {
+			users.push({
+				userId: socket.userId,
+			});
+		}
 	}
 	socket.emit("user:users", users);
 
@@ -26,11 +32,18 @@ io.on("connection", (socket) => {
 	});
 
 	// forward the private message to the right recipient
-	socket.on("message:private", ({ content, to }) => {
-		socket.to(to).emit("message:private", {
+	socket.on("message:private", (to, from, content, callback) => {
+		// TODO: DB 저장할꺼고
+		const row = {
+			from,
 			content,
-			from: socket.id,
-		});
+		};
+
+		socket.to(to).emit("message:private", row);
+
+		if (callback) {
+			callback(row);
+		}
 	});
 
 	// notify users upon disconnection

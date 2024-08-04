@@ -1,14 +1,14 @@
-import {onMounted, onUnmounted} from 'vue';
+import {onMounted, onUnmounted,} from 'vue';
 
 export default function(socket, evts) {
 	const socketEvts = Object.keys(evts);
 	onMounted(()=>{
 		socketEvts.forEach(evtName=>{
-			socket.on(evtName, evtName[evtName])
+			socket.on(evtName, evts[evtName]);
 		})
-		// if(process.env.DEV) {
+		if(process.env.DEV) {
 			console.log(socket.connected, socket.nsp, socketEvts)
-		// }
+		}
 	})
 
 	onUnmounted(()=>{

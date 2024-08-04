@@ -88,13 +88,13 @@ import useUser from "src/stores/useUser";
 export default defineComponent({
   name: "MainLayout",
   components: { LogoutBtn },
-	// setup() {
-  //   useSocketListner(socket, {
-  //     "users": (users) => {
-  //       console.log("users listen", users);
-  //     },
-  //   });
-  // },
+	setup() {
+    // useSocketListner(socket, {
+    //   "user:users": (users) => {
+    //     console.log("users listen", users);
+    //   },
+    // });
+  },
   data() {
     return {
       leftDrawerOpen: false,
