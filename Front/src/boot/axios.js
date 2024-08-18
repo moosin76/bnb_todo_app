@@ -19,6 +19,10 @@ api.interceptors.response.use(function (response) {
 			})
 			return false;
 		default:
+			Notify.create({
+				type: "negative",
+				message: `Error ${error.response.status}`
+			})
 			return Promise.reject(error);
 	}
 });

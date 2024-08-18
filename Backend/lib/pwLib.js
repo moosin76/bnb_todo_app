@@ -11,8 +11,10 @@ const createSalt = async (len = 64) => {
 	return buf.toString("base64");
 };
 
-const createHashed = async (password, len = 64) => {
-	const salt = await createSalt();
+const createHashed = async (password, salt="", len = 64) => {
+	if(!salt) {
+		salt = await createSalt();
+	}
 	const key = await pbkdf2Promise(password, salt, LOOP_CNT, len, "sha512");
 	const hashed = key.toString("base64");
 

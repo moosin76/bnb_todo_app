@@ -9,35 +9,72 @@ io.use((socket, next) => {
 	next();
 });
 
-io.on("connection", (socket) => {
+const getRoomIds = async (userId) => {
+	const data = await $DB.chatUsers.findAll({
+		attributes: ['roomId'],
+		where: { userId }
+	})
+	const rooms = data.map(room => room.roomId)
+	return rooms;
+}
+
+const joinChatRoom = async (socket, roomId) => {
+	socket.join(`room-${roomId}`);
+	const room = await $DB.rooms.findOne({
+		where: { id: roomId },
+		include: {
+			model: $DB.chatUsers,
+			as: 'users',
+		}
+		/* [
+			// { model: $DB.chatMessages, where: { roomId } },
+			{ model: $DB.chatUsers }
+		]
+			*/
+	})
+	// console.log(room);
+	return room;
+}
+
+io.on("connection", async (socket) => {
 	console.log(socket.userId, socket.id);
 	// fetch existing users
 
+	await $DB.user.update({ connected: true }, { where: { id: socket.userId } })
+
 	socket.join(socket.userId); // 아이디로 방에 입장
-
-	const users = [];
-	for (let [id, socket] of io.sockets) {
-		const find = users.find(u => u.userId == socket.userId);
-		if (!find) {
-			users.push({
-				userId: socket.userId,
-			});
-		}
+	// TODO: 내가 입장할 방 목록 가져오고 방에 입장
+	const roomIds = await getRoomIds(socket.userId);
+	console.log('roomIds', roomIds);
+	// TODO: 방 목록을 반환 <-
+	const rooms = [];
+	for (const roomId of roomIds) {
+		const room = await joinChatRoom(socket, roomId);
+		rooms.push(room.toJSON());
 	}
-	socket.emit("user:users", users);
 
-	// notify existing users
-	socket.broadcast.emit("user:connected", {
-		userId: socket.userId,
-	});
+
+	console.log('rooms', rooms);
+
+	// TODO: 방 목록에 내가 접속했음을 알린다.
 
 	// forward the private message to the right recipient
-	socket.on("message:private", (to, from, content, callback) => {
+	socket.on("message:private", async (to, from, content, callback) => {
+		console.log("m,s", to, from);
 		// TODO: DB 저장할꺼고
-		const row = {
+		const row = await $DB.chatMessages.create({
+			to,
 			from,
 			content,
-		};
+			userId: socket.userId
+		})
+
+		console.log(row);
+
+		// const row = {
+		// 	from,
+		// 	content,
+		// };
 
 		socket.to(to).emit("message:private", row);
 
@@ -47,8 +84,15 @@ io.on("connection", (socket) => {
 	});
 
 	// notify users upon disconnection
-	socket.on("disconnect", () => {
-		console.log("disconnect", socket.userId);
-		socket.broadcast.emit("user:disconnected", socket.userId);
+	socket.on("disconnect", async () => {
+		const matchingSockets = await io.in(socket.userId).allSockets();
+		const isDisconnected = matchingSockets.size == 0;
+		if (isDisconnected) {
+			console.log("disconnect", socket.userId);
+			// TODO: 내가 입장한 방의 사용자들에게 내가 연결이 종료됬음을 알림
+
+			await $DB.user.update({ connected: false }, { where: { id: socket.userId } });
+		}
+
 	});
 });

@@ -4,8 +4,17 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { socket } from "boot/socket";
+import useSocketListner from "src/composables/useSocketListner";
+import useChat from "src/stores/useChat";
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+	setup() {
+    const chatStore = useChat();
+    useSocketListner(socket, {
+      
+    });
+  },
 });
 </script>

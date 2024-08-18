@@ -10,12 +10,6 @@ export default boot(({ router }) => {
 		if (!userStore.user && Cookies.has('token')) {
 			await userApi.auth();
 		}
-		// 로그인이 되었는데 소켓이 연결이 안되었으면 소켓에 접속하자
-		console.log('ss=>', userStore.isLogin, !socket.connected);
-		if (userStore.isLogin && !socket.connected) {
-			socket.auth = { userId: userStore.user.id };
-			socket.connect();
-		}
 
 			if (to.meta.access == 'member') {
 				if (userStore.isLogin) {

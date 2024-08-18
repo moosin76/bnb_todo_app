@@ -49,7 +49,12 @@
         </q-list>
       </q-scroll-area>
 
-      <q-img v-if="isLogin" class="absolute-top" src="/images/road.jpg" style="height: 192px">
+      <q-img
+        v-if="isLogin"
+        class="absolute-top"
+        src="/images/road.jpg"
+        style="height: 192px"
+      >
         <div class="absolute-bottom bg-transparent">
           <q-avatar
             size="56px"
@@ -58,14 +63,14 @@
             text-color="white"
           >
             {{ user.userName[0] }}
-						<q-menu>
-							<q-list>
-								<LogoutBtn>로그아웃</LogoutBtn>
-							</q-list>
-						</q-menu>
+            <q-menu>
+              <q-list>
+                <LogoutBtn>로그아웃</LogoutBtn>
+              </q-list>
+            </q-menu>
           </q-avatar>
           <div class="text-weight-bold">{{ user.nickName }}</div>
-          <div>{{user.phone}}</div>
+          <div>{{ user.phone }}</div>
         </div>
       </q-img>
     </q-drawer>
@@ -84,17 +89,27 @@ import { mapState } from "pinia";
 import useUser from "src/stores/useUser";
 // import { socket } from "boot/socket";
 // import useSocketListner from "src/composables/useSocketListner";
-
+// import useChat from "src/stores/useChat";
 export default defineComponent({
   name: "MainLayout",
   components: { LogoutBtn },
-	setup() {
-    // useSocketListner(socket, {
-    //   "user:users": (users) => {
-    //     console.log("users listen", users);
-    //   },
-    // });
-  },
+  // setup() {
+  //   const chatStore = useChat();
+  //   useSocketListner(socket, {
+  //     "user:users": (users) => {
+  //       console.log("users listen", users);
+  //       chatStore.setUsers(users);
+  //     },
+  //     "user:connected": (user) => {
+  //       console.log("listen user connected", user);
+  //       chatStore.userConnected(user);
+  //     },
+  //     "user:disconnected": (userId) => {
+  //       console.log('listen user disconnected', userId)
+  //       chatStore.userDisconnected(userId);
+  //     },
+  //   });
+  // },
   data() {
     return {
       leftDrawerOpen: false,
@@ -113,7 +128,7 @@ export default defineComponent({
     };
   },
   computed: {
-		...mapState(useUser, ['user', 'isLogin']),
+    ...mapState(useUser, ["user", "isLogin"]),
     todayDate() {
       // 영상 10분 30초 까지 봤음
       const timeStamp = Date.now();

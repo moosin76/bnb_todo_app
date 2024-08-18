@@ -7,14 +7,20 @@
       :limits="[200, 300]"
     >
       <template #before>
-        <UserList v-model="selectedUser" :users="users"></UserList>
+        <RoomList></RoomList>
       </template>
       <template #after>
-        <MessageForm
+        <div
           v-if="selectedUser"
-          :user="selectedUser"
-          @message="sendMessage"
-        ></MessageForm>
+          class="full-height"
+        >
+          <MessageList :user="selectedUser" :me="me"></MessageList>
+          <MessageForm
+            :user="selectedUser"
+            @message="sendMessage"
+          ></MessageForm>
+        </div>
+
         <div v-else>대화 상대를 선택하세요.!</div>
       </template>
     </q-splitter>
@@ -23,26 +29,17 @@
 
 <script>
 import { defineComponent } from "vue";
-import { socket } from "src/boot/socket";
-import useSocketListner from "src/composables/useSocketListner";
-import UserList from "src/components/chat/UserList.vue";
 import { mapState } from "pinia";
 import useChat from "src/stores/useChat";
 import useUser from "src/stores/useUser";
 import MessageForm from "src/components/chat/MessageForm.vue";
 import socketApi from "src/apis/socketApi";
+import MessageList from "src/components/chat/MessageList.vue";
+import RoomList from "src/components/chat/RoomList.vue";
 
 export default defineComponent({
-  components: { UserList, MessageForm },
+  components: { RoomList, MessageForm, MessageList },
   name: "ChatPage",
-  setup() {
-    useSocketListner(socket, {
-      "message:private": (data) => {
-        const chatStore = useChat();
-				chatStore.addMessage(data);
-      },
-    });
-  },
   data() {
     return {
       splitterModel: 300,
