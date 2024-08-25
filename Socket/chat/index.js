@@ -20,20 +20,19 @@ const getRoomIds = async (userId) => {
 
 const joinChatRoom = async (socket, roomId) => {
 	socket.join(`room-${roomId}`);
-	const room = await $DB.rooms.findOne({
-		where: { id: roomId },
-		include: {
-			model: $DB.chatUsers,
-			as: 'users',
-		}
-		/* [
-			// { model: $DB.chatMessages, where: { roomId } },
-			{ model: $DB.chatUsers }
-		]
-			*/
-	})
-	// console.log(room);
-	return room;
+
+	const [room, users, messages] = await Promise.all([
+		$DB.rooms.findByPk(roomId, { attributes: ['id', 'name', 'category', 'userId', 'desc'] }),
+		$DB.roomUserView.findAll({ where: { roomId: roomId } }),
+		$DB.chatMessages.findAll({ where: { roomId: roomId } })
+	])
+
+	const result = room.toJSON();
+	result.users = users.map(user => user.toJSON())
+	result.messages = messages.map(message => message.toJSON)
+	console.log(result);
+
+	return result;
 }
 
 io.on("connection", async (socket) => {
@@ -50,11 +49,11 @@ io.on("connection", async (socket) => {
 	const rooms = [];
 	for (const roomId of roomIds) {
 		const room = await joinChatRoom(socket, roomId);
-		rooms.push(room.toJSON());
+		rooms.push(room);
 	}
+	// console.log('rooms', rooms);
+	socket.emit('room:init', rooms);
 
-
-	console.log('rooms', rooms);
 
 	// TODO: 방 목록에 내가 접속했음을 알린다.
 

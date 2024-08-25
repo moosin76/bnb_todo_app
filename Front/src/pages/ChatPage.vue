@@ -7,21 +7,26 @@
       :limits="[200, 300]"
     >
       <template #before>
-        <RoomList></RoomList>
+        <RoomList @selected="selectedRoom"></RoomList>
       </template>
       <template #after>
-        <div
-          v-if="selectedUser"
-          class="full-height"
+        <q-splitter
+          v-model="splitterModel2"
+          style="height: calc(100vh - 192px)"
+          unit="px"
+          :limits="[50, 200]"
+          reverse
         >
-          <MessageList :user="selectedUser" :me="me"></MessageList>
-          <MessageForm
-            :user="selectedUser"
-            @message="sendMessage"
-          ></MessageForm>
-        </div>
-
-        <div v-else>대화 상대를 선택하세요.!</div>
+          <template #before>
+            <div v-if="curRoom" class="full-height">
+							<pre>{{ curRoom }}</pre>
+            </div>
+            <div v-else>대화방을 선택하세요!</div>
+          </template>
+          <template #after>
+            <UserList v-if="curRoom" :users="curRoom.users"></UserList>
+          </template>
+        </q-splitter>
       </template>
     </q-splitter>
   </q-page>
@@ -36,21 +41,28 @@ import MessageForm from "src/components/chat/MessageForm.vue";
 import socketApi from "src/apis/socketApi";
 import MessageList from "src/components/chat/MessageList.vue";
 import RoomList from "src/components/chat/RoomList.vue";
+import UserList from 'components/chat/UserList.vue'
 
 export default defineComponent({
-  components: { RoomList, MessageForm, MessageList },
+  components: { RoomList, MessageForm, MessageList, UserList },
   name: "ChatPage",
   data() {
     return {
       splitterModel: 300,
-      selectedUser: null,
+      splitterModel2: 200,
+      curRoomId: "",
     };
   },
   computed: {
-    ...mapState(useChat, ["users"]),
-    ...mapState(useUser, { me: "user" }),
+    ...mapState(useChat, ["rooms"]),
+    curRoom() {
+      return this.rooms.find((room) => room.id == this.curRoomId);
+    },
   },
   methods: {
+    selectedRoom(roomId) {
+      this.curRoomId = roomId;
+    },
     async sendMessage(content) {
       const data = await socketApi.sendMessage(
         this.selectedUser.userId,

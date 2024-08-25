@@ -9,14 +9,15 @@ router.post('/room', isUser, $API_CALL(async (ctx) => {
 	return data;
 }))
 
-router.get('/room/:id', isUser, $API_CALL(async (ctx)=>{
+router.get('/room/:id', isUser, $API_CALL(async (ctx) => {
 	const roomId = ctx.params.id;
 	const data = await chatCtrl.getRoom(roomId, ctx.user);
 	return data;
 }))
 
-router.get('/rooms', isUser, $API_CALL(async (ctx)=>{
-	const rooms = await chatCtrl.roomList(ctx.user);
+router.get('/rooms', isUser, $API_CALL(async (ctx) => {
+	const query = ctx.query;
+	const rooms = await chatCtrl.roomList(ctx.user, query);
 	return rooms;
 }))
 

@@ -6,6 +6,11 @@ const createRoom = async (form) => {
 	return data;
 }
 
+const roomList = async (params) => {
+	const { data } = await api.get(`${URL}/rooms`, { params });
+	return data;
+}
+
 export default {
-	createRoom,
+	createRoom, roomList
 }

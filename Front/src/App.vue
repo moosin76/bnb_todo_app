@@ -13,7 +13,9 @@ export default defineComponent({
 	setup() {
     const chatStore = useChat();
     useSocketListner(socket, {
-      
+      'room:init':(rooms)=>{
+				chatStore.initRooms(rooms);
+			}
     });
   },
 });

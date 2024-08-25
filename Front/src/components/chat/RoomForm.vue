@@ -58,7 +58,7 @@ export default defineComponent({
   emits: ["created"],
   data() {
     return {
-      dialog: true,
+      dialog: false,
       privateRoom: false,
       form: {
         name: "",
@@ -66,6 +66,7 @@ export default defineComponent({
         password: "",
         category: "",
       },
+
     };
   },
   watch: {

@@ -1,4 +1,6 @@
 const pwLib = require('../lib/pwLib');
+const { Op } = require('sequelize');
+const getOffsetAndLimit = require('../lib/getOffsetAndLimit');
 
 const createRoom = async (form, user) => {
 
@@ -26,15 +28,38 @@ const getRoom = async (roomId, user) => {
 	return room;
 }
 
-const roomList = async(user)=>{
-	const data = await $DB.chatUsers.findAll({
-		attributes:['roomId'],
-		where:{userId: user.id}
+const roomList = async (user, query) => {
+
+	const sortBy = query.sortBy || 'createdAt';
+	const descending = query.descending == 'true' ? true : false;
+	const page = parseInt(query.page, 10) || 1;
+	const rowsPerPage = parseInt(query.rowsPerPage, 10) || 10;
+	const search = query.search || '';
+
+	const where = {
+		// 내가 입장하지 않은 방 목록 만 
+	}
+	if (search) { //검색어가 있으면
+		where[Op.or] = [
+			{ name: { [Op.like]: `%${search}%` } },
+			{ desc: { [Op.like]: `%${search}%` } },
+			{ category: { [Op.like]: `%${search}%` } },
+			{ userName: { [Op.like]: `%${search}%` } },
+			{ nickName: { [Op.like]: `%${search}%` } },
+		]
+	}
+
+	const data = await $DB.roomListView.findAndCountAll({
+		where,
+		...getOffsetAndLimit(page, rowsPerPage),
+		order: [
+			[sortBy, descending ? 'ASC' : 'DESC']
+		]
 	})
-	const rooms = data.map(room => room.roomId) 
-	return rooms;
+
+	return data;
 }
 
 module.exports = {
-	createRoom, getRoom,roomList
+	createRoom, getRoom, roomList
 }
