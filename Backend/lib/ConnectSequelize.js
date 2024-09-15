@@ -28,16 +28,19 @@ module.exports = async function (modelPath, host, username, password, database, 
 		}
 	})
 
-	const viewPath = `${modelPath}/views`;
-	if (fs.existsSync(viewPath)) {
-		fs.readdirSync(viewPath)
-			.filter(file => (file.slice(-3) == '.js'))
-			.forEach(async (file) => {
-				const model = await (require(path.join(viewPath, file)))(sequelize, Sequelize.DataTypes);
-				db[model.name] = model;
-				console.log('view model', model)
-			})
-	}
+	setTimeout(async () => {
+		const viewPath = `${modelPath}/views`;
+		if (fs.existsSync(viewPath)) {
+			fs.readdirSync(viewPath)
+				.filter(file => (file.slice(-3) == '.js'))
+				.forEach(async (file) => {
+					const model = await (require(path.join(viewPath, file)))(sequelize, Sequelize.DataTypes);
+					db[model.name] = model;
+					console.log('view model', model)
+				})
+		}
+	}, 1000)
+
 
 
 	await sequelize.sync({ alter: false, })

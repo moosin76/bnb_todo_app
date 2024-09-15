@@ -11,8 +11,15 @@ export default defineStore('useChat', {
 		async initRooms(rooms) {
 			this.rooms = rooms;
 		},
-		async joinRoom(roomId) {
-			
+    async newRoom(room) {
+      this.rooms.push(room);
+      console.log('newRoom', this.rooms);
+    },
+		async joinUser(roomId, user) {
+      const room = this.rooms.find(room=> room.id == roomId);
+      if(room) {
+        room.users.push(user);
+      }
 		}
 	},
 });

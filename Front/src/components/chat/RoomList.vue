@@ -22,9 +22,10 @@
 <script>
 import { defineComponent } from "vue";
 import RoomSearch from "components/chat/RoomSearch.vue";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import useChat from "src/stores/useChat";
 import RoomItem from "components/chat/RoomItem.vue";
+import socketApi from "src/apis/socketApi";
 
 export default defineComponent({
   components: { RoomSearch, RoomItem },
@@ -39,11 +40,17 @@ export default defineComponent({
     ...mapState(useChat, ["rooms"]),
   },
   methods: {
+    ...mapActions(useChat, ['newRoom']),
     searchRooms() {
       this.$refs.roomSearch.show();
     },
-    addRoom(roomId) {
+    async addRoom(roomId) {
       console.log("addRoom", roomId);
+      // 소켓 서버에서 룸 아이디로 룸정보를 가져와서
+      const room = await socketApi.addRoom(roomId);
+      console.log('addRoom', room);
+      // 내 useChat.rooms 에 넣자.
+      this.newRoom(room);
     },
 		selectRoom(roomId) {
 			this.$emit('selected', roomId)

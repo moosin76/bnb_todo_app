@@ -8,6 +8,15 @@ const sendMessage = (to, from, content) => {
 	})
 }
 
+const addRoom = (roomId) => {
+  return new Promise((resolve, reject)=>{
+    socket.emit('room:addRoom', roomId, (room)=>{
+      resolve(room);
+    })
+  })
+}
+
 export default {
 	sendMessage,
+  addRoom,
 }
