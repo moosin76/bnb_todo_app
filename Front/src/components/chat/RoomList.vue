@@ -10,7 +10,9 @@
         v-for="room in rooms"
         :key="room.id"
         :room="room"
-				clickable
+        clickable
+        active-class="bg-blue-3"
+        :active="room == curRoom"
         @click="selectRoom(room.id)"
       ></RoomItem>
     </q-list>
@@ -30,7 +32,10 @@ import socketApi from "src/apis/socketApi";
 export default defineComponent({
   components: { RoomSearch, RoomItem },
   name: "RoomList",
-	emits:['selected'],
+  props: {
+    curRoom: { type: [Object, null], default: null },
+  },
+  emits: ["selected"],
   data() {
     return {
       search: "",
@@ -40,7 +45,7 @@ export default defineComponent({
     ...mapState(useChat, ["rooms"]),
   },
   methods: {
-    ...mapActions(useChat, ['newRoom']),
+    ...mapActions(useChat, ["newRoom"]),
     searchRooms() {
       this.$refs.roomSearch.show();
     },
@@ -48,16 +53,17 @@ export default defineComponent({
       console.log("addRoom", roomId);
       // 소켓 서버에서 룸 아이디로 룸정보를 가져와서
       const room = await socketApi.addRoom(roomId);
-      console.log('addRoom', room);
+      console.log("addRoom", room);
       // 내 useChat.rooms 에 넣자.
       this.newRoom(room);
     },
-		selectRoom(roomId) {
-			this.$emit('selected', roomId)
-		}
+    selectRoom(roomId) {
+      this.$emit("selected", roomId);
+    },
   },
 });
 </script>
 
 <style lang='scss' scoped>
+
 </style>

@@ -20,7 +20,7 @@ const joinChatRoom = async (socket, roomId) => {
 
 	const result = room.toJSON();
 	result.users = users.map(user => user.toJSON())
-	result.messages = messages.map(message => message.toJSON)
+	result.messages = messages.map(message => message.toJSON())
 	console.log(result);
 
 	return result;

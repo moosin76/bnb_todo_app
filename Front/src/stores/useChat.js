@@ -20,6 +20,12 @@ export default defineStore('useChat', {
       if(room) {
         room.users.push(user);
       }
-		}
+		},
+    addMessage(message) {
+      const room = this.rooms.find(room=> room.id == message.roomId);
+      if(room) {
+        room.messages.push(message);
+      }
+    }
 	},
 });

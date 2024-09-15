@@ -1,6 +1,7 @@
 const io = $IO.of('/chat');
 const { getRoomIds, joinChatRoom } = require('./lib/func');
 const roomHandler = require('./handlers/roomHandler');
+const chatHandler = require('./handlers/chatHandler');
 
 io.use((socket, next) => {
 	const userId = socket.handshake.auth.userId;
@@ -14,7 +15,8 @@ io.use((socket, next) => {
 io.on("connection", async (socket) => {
 	// 핸들러 등록
 	roomHandler(io, socket);
-	
+	chatHandler(io, socket);
+
 	console.log(socket.userId, socket.id);
 	// fetch existing users
 
@@ -36,30 +38,6 @@ io.on("connection", async (socket) => {
 
 	// TODO: 방 목록에 내가 접속했음을 알린다.
 
-	// forward the private message to the right recipient
-	socket.on("message:private", async (to, from, content, callback) => {
-		console.log("m,s", to, from);
-		// TODO: DB 저장할꺼고
-		const row = await $DB.chatMessages.create({
-			to,
-			from,
-			content,
-			userId: socket.userId
-		})
-
-		console.log(row);
-
-		// const row = {
-		// 	from,
-		// 	content,
-		// };
-
-		socket.to(to).emit("message:private", row);
-
-		if (callback) {
-			callback(row);
-		}
-	});
 
 	// notify users upon disconnection
 	socket.on("disconnect", async () => {

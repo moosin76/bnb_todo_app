@@ -21,4 +21,10 @@ router.get('/rooms', isUser, $API_CALL(async (ctx) => {
 	return rooms;
 }))
 
+router.post('/user/:roomId', isUser, $API_CALL(async ctx => {
+	const roomId = ctx.params.roomId;
+	const data = await chatCtrl.createUser(ctx.user, roomId);
+	return data;
+}))
+
 module.exports = router;

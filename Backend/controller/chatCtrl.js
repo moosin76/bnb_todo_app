@@ -1,5 +1,5 @@
 const pwLib = require('../lib/pwLib');
-const { Op } = require('sequelize');
+const { Op, literal } = require('sequelize');
 const getOffsetAndLimit = require('../lib/getOffsetAndLimit');
 
 const createRoom = async (form, user) => {
@@ -38,6 +38,9 @@ const roomList = async (user, query) => {
 
 	const where = {
 		// 내가 입장하지 않은 방 목록 만 
+		id: {
+			[Op.notIn]: literal(`(SELECT roomId FROM chatUsers WHERE userId='${user.id}')`)
+		}
 	}
 	if (search) { //검색어가 있으면
 		where[Op.or] = [
@@ -60,6 +63,19 @@ const roomList = async (user, query) => {
 	return data;
 }
 
+const createUser = async (user, roomId) => {
+
+	const room = await $DB.rooms.findByPk(roomId);
+	if (!room) throw new Error('룸이 없습니다.');
+
+	const data = await $DB.chatUsers.create({
+		roomId: roomId,
+		userId: user.id
+	});
+	return data;
+}
+
 module.exports = {
-	createRoom, getRoom, roomList
+	createRoom, getRoom, roomList,
+	createUser,
 }

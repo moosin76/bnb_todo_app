@@ -33,7 +33,7 @@
         >
 					<template #body-cell-cmd="props">
 						<q-td :props="props">
-							<q-btn icon="mdi-chat-plus" round dense ></q-btn>
+							<q-btn icon="mdi-chat-plus" round dense @click="addUser(props.row.id)"></q-btn>
 						</q-td>
 					</template>
 				</q-table>
@@ -121,13 +121,18 @@ export default defineComponent({
     createRoom() {
       this.$refs.roomForm.show();
     },
+    async addUser(roomId) {
+      const data = await chatApi.addChatUser(roomId);
+      console.log("addUser", data);
+      this.selectRoom(roomId);
+    },
     selectRoom(roomId) {
       console.log("select Room", roomId);
       this.$emit("selected", roomId);
       this.hide();
     },
     async onRequest({ pagination }) {
-      console.log(pagination);
+      // console.log(pagination);
       this.loading = true;
       const data = await chatApi.roomList(pagination);
       if (data) {
@@ -138,7 +143,7 @@ export default defineComponent({
         };
       }
       this.loading = false;
-      console.log(data);
+      // console.log(data);
     },
     clearSearch() {
       this.pagination.search = "";

@@ -17,7 +17,10 @@ export default defineComponent({
         chatStore.initRooms(rooms);
       },
       "room:joinUser": (roomId, user) => {
-
+        chatStore.joinUser(roomId, user);
+      },
+      "chat:message": (message) => {
+        chatStore.addMessage(message);
       },
     });
   },

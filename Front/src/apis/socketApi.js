@@ -1,8 +1,8 @@
 import { socket } from 'boot/socket'
 
-const sendMessage = (to, from, content) => {
+const sendMessage = (roomId, from, content) => {
 	return new Promise((resolve, reject) => {
-		socket.emit("message:private", to, from, content, (data) => {
+		socket.emit("chat:text", roomId, from, content, (data) => {
 			resolve(data)
 		})
 	})

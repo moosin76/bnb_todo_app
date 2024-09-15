@@ -11,6 +11,12 @@ const roomList = async (params) => {
 	return data;
 }
 
+const addChatUser = async(roomId)=>{
+  const {data} = await api.post(`${URL}/user/${roomId}`);
+  return data;
+}
+
 export default {
-	createRoom, roomList
+	createRoom, roomList,
+  addChatUser,
 }

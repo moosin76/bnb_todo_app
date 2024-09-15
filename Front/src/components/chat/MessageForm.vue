@@ -3,6 +3,8 @@
     <div class="row">
       <q-input
         v-model="message"
+        type="textarea"
+        autogrow
         class="col-grow"
         square
         borderless
@@ -28,9 +30,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "MessageForm",
-  props: {
-    user: { type: Object, required: true },
-  },
+  props: {},
   emits: ["message"],
   data() {
     return {

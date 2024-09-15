@@ -7,7 +7,7 @@
       :limits="[200, 300]"
     >
       <template #before>
-        <RoomList @selected="selectedRoom"></RoomList>
+        <RoomList @selected="selectedRoom" :cur-room="curRoom"></RoomList>
       </template>
       <template #after>
         <q-splitter
@@ -19,7 +19,9 @@
         >
           <template #before>
             <div v-if="curRoom" class="full-height">
-							<pre>{{ curRoom }}</pre>
+							<!-- <pre>{{ curRoom }}</pre> -->
+               <MessageList :room="curRoom" :my-id="user.id"></MessageList>
+               <MessageForm @message="sendMessage"></MessageForm>
             </div>
             <div v-else>대화방을 선택하세요!</div>
           </template>
@@ -34,7 +36,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import useChat from "src/stores/useChat";
 import useUser from "src/stores/useUser";
 import MessageForm from "src/components/chat/MessageForm.vue";
@@ -55,22 +57,25 @@ export default defineComponent({
   },
   computed: {
     ...mapState(useChat, ["rooms"]),
+    ...mapState(useUser, ['user']),
     curRoom() {
       return this.rooms.find((room) => room.id == this.curRoomId);
     },
   },
   methods: {
+    ...mapActions(useChat, ['addMessage']),
     selectedRoom(roomId) {
       this.curRoomId = roomId;
     },
     async sendMessage(content) {
-      const data = await socketApi.sendMessage(
-        this.selectedUser.userId,
-        this.me.id,
+      console.log(content);
+      const message = await socketApi.sendMessage(
+        this.curRoomId,
+        this.user.id,
         content
       );
-      console.log("sendMessage callback", data);
-      this.selectedUser.messages.push(data);
+      // console.log("sendMessage callback", message);
+      this.addMessage(message)
     },
   },
 });

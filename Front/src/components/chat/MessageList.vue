@@ -1,32 +1,36 @@
 <template>
-  <q-scroll-area style="height: calc(100% - 40px); padding: 0 16px;">
-    <q-chat-message
-      v-for="(message, idx) in messages"
-      :key="idx"
-      :name="message.from"
-      :text="[message.content]"
-      :sent="message.from == me.id"
+  <q-scroll-area style="height: calc(100% - 40px); padding: 0 16px">
+    <MessageItem
+      v-for="message in messages"
+      :key="message.id"
+      :message="message"
+      :sent="myId"
+      :users="room.users"
     />
   </q-scroll-area>
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import MessageItem from "components/chat/MessageItem.vue";
 
 export default defineComponent({
+  // TODO: Infinite Scroll 컴포넌트 써보자
+  components: { MessageItem },
   name: "MessageList",
   props: {
-    user: { type: Object, required: true },
-    me: { type: Object, required: true },
+    room: { type: Object, required: true },
+    myId: { type: String, required: true },
   },
   data() {
     return {};
   },
   computed: {
     messages() {
-      return this.user.messages;
+      return this.room.messages;
     },
   },
+
 });
 </script>
 
