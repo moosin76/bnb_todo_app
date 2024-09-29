@@ -11,6 +11,7 @@
         bg-color="grey-2"
         input-class="q-px-sm"
         dense
+        @keydown.enter.ctrl="sendMessage"
       >
       </q-input>
       <q-btn

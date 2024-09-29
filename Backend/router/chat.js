@@ -27,4 +27,13 @@ router.post('/user/:roomId', isUser, $API_CALL(async ctx => {
 	return data;
 }))
 
+router.get('/messages/:roomId', isUser, $API_CALL(async ctx=>{
+	const roomId = ctx.params.roomId;
+	const offset = parseInt(ctx.query.offset, 10);
+	const limit = parseInt(ctx.query.limit, 10);
+	
+	const data = await chatCtrl.getRoomMessages(roomId, offset, limit);
+	return data;
+}))
+
 module.exports = router;

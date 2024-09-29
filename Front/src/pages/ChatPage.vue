@@ -19,9 +19,13 @@
         >
           <template #before>
             <div v-if="curRoom" class="full-height">
-							<!-- <pre>{{ curRoom }}</pre> -->
-               <MessageList :room="curRoom" :my-id="user.id"></MessageList>
-               <MessageForm @message="sendMessage"></MessageForm>
+              <!-- <pre>{{ curRoom }}</pre> -->
+              <MessageList
+                ref="list"
+                :room="curRoom"
+                :my-id="user.id"
+              ></MessageList>
+              <MessageForm @message="sendMessage"></MessageForm>
             </div>
             <div v-else>대화방을 선택하세요!</div>
           </template>
@@ -43,7 +47,7 @@ import MessageForm from "src/components/chat/MessageForm.vue";
 import socketApi from "src/apis/socketApi";
 import MessageList from "src/components/chat/MessageList.vue";
 import RoomList from "src/components/chat/RoomList.vue";
-import UserList from 'components/chat/UserList.vue'
+import UserList from "components/chat/UserList.vue";
 
 export default defineComponent({
   components: { RoomList, MessageForm, MessageList, UserList },
@@ -57,25 +61,25 @@ export default defineComponent({
   },
   computed: {
     ...mapState(useChat, ["rooms"]),
-    ...mapState(useUser, ['user']),
+    ...mapState(useUser, ["user"]),
     curRoom() {
       return this.rooms.find((room) => room.id == this.curRoomId);
     },
   },
   methods: {
-    ...mapActions(useChat, ['addMessage']),
+    ...mapActions(useChat, ["addMessage"]),
     selectedRoom(roomId) {
       this.curRoomId = roomId;
     },
     async sendMessage(content) {
-      console.log(content);
+      // console.log(content);
       const message = await socketApi.sendMessage(
         this.curRoomId,
         this.user.id,
         content
       );
       // console.log("sendMessage callback", message);
-      this.addMessage(message)
+      this.addMessage(message);
     },
   },
 });

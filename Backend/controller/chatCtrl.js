@@ -75,7 +75,19 @@ const createUser = async (user, roomId) => {
 	return data;
 }
 
+const getRoomMessages = async (roomId, offset, limit) => {
+	const data = await $DB.chatMessages.findAndCountAll(
+		{
+			where: { roomId },
+			offset,
+			limit,
+			order: [['createdAt', 'DESC']]
+		}
+	)
+	return data;
+}
+
 module.exports = {
 	createRoom, getRoom, roomList,
-	createUser,
+	createUser, getRoomMessages
 }
