@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 3000;
 const API_CALL = require('./lib/API_CALL');
 global.$API_CALL = API_CALL;
 
+global.$UPLOAD_PATH = __dirname + '/upload';
+
 // DB
 const ConnectSequelize = require('./lib/ConnectSequelize')
 const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_DATABASE } = process.env;

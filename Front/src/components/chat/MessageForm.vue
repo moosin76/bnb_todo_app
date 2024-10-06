@@ -1,6 +1,23 @@
 <template>
   <q-form @submit.stop="sendMessage" class="absolute-bottom">
     <div class="row">
+
+      <q-file
+        ref="file"
+        v-model="file"
+        @update:model-value="uploadFile"
+        style="display: none"
+      ></q-file>
+      <q-btn
+        icon="mdi-upload"
+        unelevated
+        dense
+        color="green"
+        square
+        @click="pickFile"
+      >
+      </q-btn>
+
       <q-input
         v-model="message"
         type="textarea"
@@ -32,10 +49,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "MessageForm",
   props: {},
-  emits: ["message"],
+  emits: ["message", 'upload'],
   data() {
     return {
       message: "",
+      file:null,
     };
   },
   methods: {
@@ -45,6 +63,13 @@ export default defineComponent({
         this.message = "";
       }
     },
+    pickFile() {
+      this.$refs.file.pickFiles();
+    },
+    uploadFile() {
+      this.$emit('upload', this.file);
+      this.file = null;
+    }
   },
 });
 </script>

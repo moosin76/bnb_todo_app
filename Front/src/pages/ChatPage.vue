@@ -25,7 +25,10 @@
                 :room="curRoom"
                 :my-id="user.id"
               ></MessageList>
-              <MessageForm @message="sendMessage"></MessageForm>
+              <MessageForm
+                @message="sendMessage"
+                @upload="sendFile"
+              ></MessageForm>
             </div>
             <div v-else>대화방을 선택하세요!</div>
           </template>
@@ -80,6 +83,21 @@ export default defineComponent({
       );
       // console.log("sendMessage callback", message);
       this.addMessage(message);
+    },
+    sendFile(file) {
+      this.$q
+        .dialog({
+          message: `${file.name} 업로드 하시겠습니까?`,
+          cancel: true,
+        })
+        .onOk(async () => {
+          const message = await socketApi.sendFile(
+            this.curRoomId,
+            this.user.id,
+            file
+          );
+          this.addMessage(message);
+        });
     },
   },
 });

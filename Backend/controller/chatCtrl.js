@@ -1,6 +1,7 @@
 const pwLib = require('../lib/pwLib');
 const { Op, literal } = require('sequelize');
 const getOffsetAndLimit = require('../lib/getOffsetAndLimit');
+const fs = require('fs');
 
 const createRoom = async (form, user) => {
 
@@ -87,7 +88,29 @@ const getRoomMessages = async (roomId, offset, limit) => {
 	return data;
 }
 
+const fileUpload = async (file) => {
+	const uploadPath = $UPLOAD_PATH + '/chat';
+	if (!fs.existsSync(uploadPath)) { // 업로드 폴더가 없으면 생성함
+		fs.mkdirSync(uploadPath, { recursive: true })
+	}
+
+	// 확장자
+	const ext = file.originalFilename.substring(
+		file.originalFilename.lastIndexOf('.'),
+		file.originalFilename.length
+	).toLowerCase();
+
+	const filename = file.newFilename + ext;
+	const buf = fs.readFileSync(file.filepath);
+	fs.writeFileSync(uploadPath+'/'+ filename, buf);
+	return filename;
+	// filepath tmp에 저장된 파일 위치
+	// newFilename 이 이름으로 저장할껀데 확장자 추가하자!
+	// originalFilename 실제 이름인데 요기서 확장자 가져오자
+}
+
 module.exports = {
 	createRoom, getRoom, roomList,
-	createUser, getRoomMessages
+	createUser, getRoomMessages,
+	fileUpload
 }
