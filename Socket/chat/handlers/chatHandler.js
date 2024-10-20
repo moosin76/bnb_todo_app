@@ -15,8 +15,8 @@ module.exports = (io, socket) => {
 
 	socket.on('chat:file', async (roomId, from, fileInfo, callback) => {
 
-		console.log(roomId, from, fileInfo);
-		callback({ roomId, from, fileInfo })
+		// console.log(roomId, from, fileInfo);
+		// callback({ roomId, from, fileInfo })
 
 		const message = await $DB.chatMessages.create({
 			from,
@@ -26,6 +26,7 @@ module.exports = (io, socket) => {
 		})
 		const roomName = getRoomName(roomId);
 		socket.to(roomName).emit("chat:message", message);
+		// console.log("file", message);
 		callback(message)
 	})
 }

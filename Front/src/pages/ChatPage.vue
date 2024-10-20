@@ -96,6 +96,7 @@ export default defineComponent({
             this.user.id,
             file
           );
+          // console.log("add file", message);
           this.addMessage(message);
         });
     },

@@ -23,8 +23,9 @@ const sendFile = async (roomId, from, file) => {
     path: data, // 저장된 파일명
   }
   return new Promise((resolve, reject) => {
-    socket.emit("chat:file", roomId, from, fileInfo, (data) => {
-      resolve(data)
+    socket.emit("chat:file", roomId, from, fileInfo, (response) => {
+      // console.log("res", response);
+      resolve(response)
     })
   })
 }

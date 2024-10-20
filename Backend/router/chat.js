@@ -4,6 +4,7 @@ const isUser = require('../middleware/isUser');
 const chatCtrl = require('../controller/chatCtrl');
 const tokenLib = require('../lib/tokenLib');
 const fs = require('fs');
+const getThumbnail = require('../lib/getThumbnail');
 
 router.post('/room', isUser, $API_CALL(async (ctx) => {
 	const form = ctx.request.body;
@@ -46,6 +47,8 @@ router.post('/file', isUser, $API_CALL(async ctx => {
 
 router.get('/file/:id/:name', async ctx => {
 	const { id, name } = ctx.params;
+	const w = ctx.query.w ? parseInt(ctx.query.w, 10) || 0 : 0;
+	const h = ctx.query.h ? parseInt(ctx.query.h, 10) || 0 : 0;
 	const token = ctx.query.token;
 
 	// 토큰 유효한지
@@ -71,10 +74,21 @@ router.get('/file/:id/:name', async ctx => {
 			throw new Error('File not found');
 		}
 
-		// path 로 파일을 주자
-		const path = $UPLOAD_PATH + '/chat/' + contents.path;
+
+
+		console.log("file type", w, h, contents);
+		let path;
+		if ((w || h) && (contents.type == 'image/jpeg' || contents.type == 'image/png')) {
+			// TODO: png, jpeg 이면 thumbnail 이미지 생성후 패스 반환
+			path = await getThumbnail($UPLOAD_PATH + '/chat', contents.path, w, h);
+			//생성 또는 이미 있는 path를 주는 함수를 하나 만들면 되겠ㅈ??
+		} else {
+			path = $UPLOAD_PATH + '/chat/' + contents.path; // 원본
+		}
+
+		const stat = fs.statSync(path);
 		ctx.body = fs.createReadStream(path);
-		ctx.set('Content-Length', contents.size);
+		ctx.set('Content-Length', stat.size);
 		ctx.set('Content-Type', contents.type);
 	} catch (e) {
 		ctx.status = 404;
