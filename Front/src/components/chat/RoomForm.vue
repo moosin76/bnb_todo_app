@@ -31,6 +31,7 @@
               v-model="form.password"
               class="q-ml-md col-grow"
               :rules="[(v) => !!v || 'required Field!']"
+              type="password"
             ></q-input>
           </div>
           <q-input
@@ -66,7 +67,6 @@ export default defineComponent({
         password: "",
         category: "",
       },
-
     };
   },
   watch: {

@@ -31,12 +31,25 @@
           v-model:pagination="pagination"
           @request="onRequest"
         >
-					<template #body-cell-cmd="props">
-						<q-td :props="props">
-							<q-btn icon="mdi-chat-plus" round dense @click="addUser(props.row.id)"></q-btn>
-						</q-td>
-					</template>
-				</q-table>
+          <template #body-cell-cmd="props">
+            <q-td :props="props">
+              <q-btn
+                v-if="props.row.secret"
+                icon="mdi-chat-alert"
+                round
+                dense
+                @click="checkPw(props.row)"
+              ></q-btn>
+              <q-btn
+                v-else
+                icon="mdi-chat-plus"
+                round
+                dense
+                @click="addUser(props.row.id)"
+              ></q-btn>
+            </q-td>
+          </template>
+        </q-table>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -80,7 +93,7 @@ export default defineComponent({
           label: "공개여부",
           field: "secret",
           sortable: true,
-          format: (val, row) => (val == 0 ? "공개" : "비공개"),
+          format: (val, row) => (val == false ? "공개" : "비공개"),
         },
         {
           name: "userName",
@@ -148,6 +161,22 @@ export default defineComponent({
     clearSearch() {
       this.pagination.search = "";
       this.onRequest({ pagination: this.pagination });
+    },
+    checkPw(row) {
+      this.$q
+        .dialog({
+          title: "비공개방 입장",
+          message: "비밀번호를 입력하세요",
+          prompt: {
+            model: "",
+            type: "password", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((password) => {
+          console.log(">>>> OK, received", password);
+        });
     },
   },
   mounted() {},

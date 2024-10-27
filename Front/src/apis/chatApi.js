@@ -23,8 +23,14 @@ const getRoomMessages = async (roomId, offset, limit) => {
   return data;
 }
 
+const roomAuth = async (roomId, password) => {
+  const { data } = await api.post(`${URL}/room-auth/${roomId}`, { password });
+  return data;
+}
+
 export default {
   createRoom, roomList,
   addChatUser,
-  getRoomMessages
+  getRoomMessages,
+  roomAuth,
 }

@@ -12,6 +12,12 @@ router.post('/room', isUser, $API_CALL(async (ctx) => {
 	return data;
 }))
 
+router.post('/room-auth/:id', isUser, $API_CALL(async (ctx) => {
+	const roomId = ctx.params.id;
+	const form = ctx.request.body;
+	return { roomId, form };
+}))
+
 router.get('/room/:id', isUser, $API_CALL(async (ctx) => {
 	const roomId = ctx.params.id;
 	const data = await chatCtrl.getRoom(roomId, ctx.user);
