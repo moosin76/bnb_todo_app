@@ -102,15 +102,26 @@ const fileUpload = async (file) => {
 
 	const filename = file.newFilename + ext;
 	const buf = fs.readFileSync(file.filepath);
-	fs.writeFileSync(uploadPath+'/'+ filename, buf);
+	fs.writeFileSync(uploadPath + '/' + filename, buf);
 	return filename;
 	// filepath tmp에 저장된 파일 위치
 	// newFilename 이 이름으로 저장할껀데 확장자 추가하자!
 	// originalFilename 실제 이름인데 요기서 확장자 가져오자
 }
 
+const roomAuth = async (roomId, password) => {
+	const room = await $DB.rooms.findByPk(roomId, {
+		attributes: ['password', 'userId']
+	});
+	const user = await $DB.user.findByPk(room.userId, {
+		attributes: ['salt']
+	})
+	const verify = await pwLib.verifyPassword(password, user.salt, room.password);
+	return verify;
+}
+
 module.exports = {
 	createRoom, getRoom, roomList,
 	createUser, getRoomMessages,
-	fileUpload
+	fileUpload, roomAuth
 }

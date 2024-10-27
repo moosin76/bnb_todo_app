@@ -1,6 +1,6 @@
 const viewName = 'roomUserView';
 const query = `SELECT 
-a.roomId, a.userId, a.blocked, 
+a.roomId, a.userId, a.status, 
 b.userName, b.nickName, b.connected  
 FROM chatUsers AS a 
 LEFT JOIN user AS b ON a.userId = b.id`;
@@ -13,7 +13,11 @@ module.exports = async (sequelize, Datatypes) => {
 			primaryKey: true
 		},
 		userId: Datatypes.STRING,
-		blocked: Datatypes.BOOLEAN,
+		status: {
+			type: Datatypes.ENUM,
+			values: ['JOIN', 'LEAVE', 'BLOCK'],
+			defaultValue: 'JOIN'
+		},
 		userName: Datatypes.STRING,
 		nickName: Datatypes.STRING,
 		connected: Datatypes.BOOLEAN,

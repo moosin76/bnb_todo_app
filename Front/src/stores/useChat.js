@@ -34,6 +34,32 @@ export default defineStore('useChat', {
         room.messages = [...room.messages, ...rows];
         room.messagesCount = count;
       }
+    },
+    userConnect(roomId, userId, connected) {
+      const room = this.rooms.find(room => room.id == roomId);
+      if (room) {
+        const user = room.users.find(u => u.userId == userId);
+        if (user) {
+          user.connected = connected;
+        }
+      }
+    },
+    userLeave(roomId, userId) {
+      const room = this.rooms.find(room => room.id == roomId);
+      if (room) {
+        const user = room.users.find(u => u.userId == userId);
+        if (user) {
+          const idx = room.users.indexOf(user);
+          room.users.splice(idx, 1);
+        }
+      }
+    },
+    roomLeave(roomId) {
+      const room = this.rooms.find(room => room.id == roomId);
+      if (room) {
+        const idx = this.rooms.indexOf(room);
+        this.rooms.splice(idx, 1);
+      }
     }
   },
 });

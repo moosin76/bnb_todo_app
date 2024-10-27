@@ -24,7 +24,7 @@ const joinChatRoom = async (socket, roomId) => {
 	// result.messagesCount = messages.count;
 	result.messages = [];
 	result.messagesCount = 0;
-	console.log(result);
+	// console.log(result);
 
 	return result;
 }

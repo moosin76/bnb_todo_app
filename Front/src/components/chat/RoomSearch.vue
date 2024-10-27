@@ -136,7 +136,7 @@ export default defineComponent({
     },
     async addUser(roomId) {
       const data = await chatApi.addChatUser(roomId);
-      console.log("addUser", data);
+      // console.log("addUser", data);
       this.selectRoom(roomId);
     },
     selectRoom(roomId) {
@@ -174,8 +174,17 @@ export default defineComponent({
           cancel: true,
           persistent: true,
         })
-        .onOk((password) => {
-          console.log(">>>> OK, received", password);
+        .onOk(async (password) => {
+          const data = await chatApi.roomAuth(row.id, password);
+          if (data) {
+            this.addUser(row.id);
+          } else {
+            this.$q.dialog({
+              title: "입장불가",
+              message: "비밀번호가 올바르지 않습니다.",
+              persistent: true,
+            });
+          }
         });
     },
   },

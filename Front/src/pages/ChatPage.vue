@@ -33,7 +33,22 @@
             <div v-else>대화방을 선택하세요!</div>
           </template>
           <template #after>
-            <UserList v-if="curRoom" :users="curRoom.users"></UserList>
+            <div
+              v-if="curRoom"
+              class="full-height"
+              style="padding-bottom: 40px; position: relative"
+            >
+              <UserList :users="curRoom.users"></UserList>
+              <q-btn
+                label="방 나가기"
+                unelevated
+                square
+                class="full-width absolute-bottom"
+                color="red"
+                style="height: 40px"
+                @click="leaveRoom"
+              ></q-btn>
+            </div>
           </template>
         </q-splitter>
       </template>
@@ -70,7 +85,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions(useChat, ["addMessage"]),
+    ...mapActions(useChat, ["addMessage", "roomLeave"]),
     selectedRoom(roomId) {
       this.curRoomId = roomId;
     },
@@ -98,6 +113,35 @@ export default defineComponent({
           );
           // console.log("add file", message);
           this.addMessage(message);
+        });
+    },
+    leaveRoom() {
+      // 소켓에 룸ID로 나가는거로 하고
+      const roomName = this.curRoom.name;
+      this.$q
+        .dialog({
+          title: "방 나가기",
+          message: `[${roomName}] 방을 나가시겠습니까?`,
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async () => {
+          this.$q.loading.show();
+          const data = await socketApi.leaveRoom(this.curRoom.id);
+          if (data) {
+            this.roomLeave(this.curRoom.id);
+            this.$q.notify({
+              type: "info",
+              message: `${roomName}을 나갔습니다.`,
+            });
+            this.curRoom = null;
+          } else {
+            this.$q.notify({
+              type: "negative",
+              message: "방에서 나가기 오류!",
+            });
+          }
+          this.$q.loading.hide();
         });
     },
   },

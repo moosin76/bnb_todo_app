@@ -23,10 +23,10 @@ io.on("connection", async (socket) => {
 	await $DB.user.update({ connected: true }, { where: { id: socket.userId } })
 
 	socket.join(socket.userId); // 아이디로 방에 입장
-	// TODO: 내가 입장할 방 목록 가져오고 방에 입장
+	// 내가 입장할 방 목록 가져오고 방에 입장
 	const roomIds = await getRoomIds(socket.userId);
 	console.log('roomIds', roomIds);
-	// TODO: 방 목록을 반환 <-
+	// 방 목록을 반환 <-
 	const rooms = [];
 	for (const roomId of roomIds) {
 		const room = await joinChatRoom(socket, roomId);
@@ -37,7 +37,7 @@ io.on("connection", async (socket) => {
 
 
 	// TODO: 방 목록에 내가 접속했음을 알린다.
-
+	
 
 	// notify users upon disconnection
 	socket.on("disconnect", async () => {

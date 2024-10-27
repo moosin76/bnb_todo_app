@@ -38,7 +38,15 @@ const addRoom = (roomId) => {
   })
 }
 
+const leaveRoom = (roomId) => {
+  return new Promise((resolve, reject) => {
+    socket.emit('room:leave', roomId, (data) => {
+      resolve(data);
+    })
+  })
+}
+
 export default {
   sendMessage, sendFile,
-  addRoom,
+  addRoom, leaveRoom
 }

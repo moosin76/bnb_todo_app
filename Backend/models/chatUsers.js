@@ -1,9 +1,10 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Datatypes) => {
 	const chatUsers = sequelize.define('chatUsers', {
-		blocked: {
-			type: DataTypes.BOOLEAN,
-			defaultValue: false
-		}
+		status: {
+			type: Datatypes.ENUM,
+			values: ['JOIN', 'LEAVE', 'BLOCK'],
+			defaultValue: 'JOIN'
+		},
 	}, {
 		freezeTableName: true,
 	});
