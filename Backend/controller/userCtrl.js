@@ -6,7 +6,7 @@ const join = async (form) => {
 		throw new Error('비밀번호 형식에 맞지 않습니다.');
 	}
 
-	const pw = await pwLib.createHashed(form.password);
+	const pw = pwLib.createHashed(form.password);
 	form.password = pw.hashed;
 	form.salt = pw.salt;
 
@@ -20,7 +20,7 @@ const login = async (id, password) => {
 		throw new Error("아이디가 올바르지 않습니다.");
 	}
 	// console.log(user);
-	const pwMatch = await pwLib.verifyPassword(password, user.salt, user.password)
+	const pwMatch = pwLib.verifyPassword(password, user.salt, user.password)
 	if (!pwMatch) {
 		throw new Error("비밀번호가 올바르지 않습니다.")
 	}

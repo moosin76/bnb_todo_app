@@ -5,20 +5,34 @@ const fs = require('fs');
 
 const createRoom = async (form, user) => {
 
+/*
+name : 클라이언트 <
+desc : "" < 
+password : 있으면 암호화 <
+salt : 암호화 하려면 생성
+category : 클라 <
+used : 기본 true,
+userId : 개설자 // 마스터로 유지 하자
+*/
+
 	const payload = {
 		...form,
-		userId: user.id
+		userId: user.id 
 	}
 
+
 	if (form.password) {
-		payload.password = (await pwLib.createHashed(form.password, user.salt)).hashed;
+		const hashed = pwLib.createHashed(form.password);
+		payload.password = hashed.hashed;
+		payload.salt = hashed.salt;
 	}
 
 	const room = await $DB.rooms.create(payload);
 
 	await $DB.chatUsers.create({
 		roomId: room.id,
-		userId: user.id
+		userId: user.id,
+		role: 'Master'
 	});
 
 	return room.id;
@@ -116,7 +130,7 @@ const roomAuth = async (roomId, password) => {
 	const user = await $DB.user.findByPk(room.userId, {
 		attributes: ['salt']
 	})
-	const verify = await pwLib.verifyPassword(password, user.salt, room.password);
+	const verify = pwLib.verifyPassword(password, user.salt, room.password);
 	return verify;
 }
 

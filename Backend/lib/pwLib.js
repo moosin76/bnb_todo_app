@@ -1,30 +1,25 @@
-
-const util = require('util');
 const crypto = require('crypto');
 
-const randomBytesPromise = util.promisify(crypto.randomBytes);
-const pbkdf2Promise = util.promisify(crypto.pbkdf2);
 const LOOP_CNT = 10;
 
-const createSalt = async (len = 64) => {
-	const buf = await randomBytesPromise(len);
+const createSalt = (len = 64) => {
+	const buf = crypto.randomBytes(len);
 	return buf.toString("base64");
 };
 
-const createHashed = async (password, salt="", len = 64) => {
+const createHashed = (password, salt="", len = 64) => {
 	if(!salt) {
-		salt = await createSalt();
+		salt = createSalt(len);
 	}
-	const key = await pbkdf2Promise(password, salt, LOOP_CNT, len, "sha512");
+	const key = crypto.pbkdf2Sync(password, salt, LOOP_CNT, len, 'sha512');
 	const hashed = key.toString("base64");
 
 	return { hashed, salt };
 };
 
-const verifyPassword = async (password, userSalt, userHashed, len = 64) => {
-	const key = await pbkdf2Promise(password, userSalt, LOOP_CNT, len, "sha512");
+const verifyPassword = (password, userSalt, userHashed, len = 64) => {
+	const key = crypto.pbkdf2Sync(password, userSalt, LOOP_CNT, len, "sha512");
 	const hashed = key.toString("base64");
-
 	return hashed === userHashed;
 };
 
