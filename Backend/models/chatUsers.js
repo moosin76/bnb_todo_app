@@ -5,10 +5,7 @@ module.exports = (sequelize, Datatypes) => {
 			values: ['Master', 'Manager', 'User', 'Block'],
 			defaultValue: 'User'
 		},
-		access :{
-			type: Datatypes.BOOLEAN,
-			defaultValue: true
-		}
+
 	}, {
 		freezeTableName: true,
 	});

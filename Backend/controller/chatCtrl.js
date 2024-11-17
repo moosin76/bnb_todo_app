@@ -125,12 +125,10 @@ const fileUpload = async (file) => {
 
 const roomAuth = async (roomId, password) => {
 	const room = await $DB.rooms.findByPk(roomId, {
-		attributes: ['password', 'userId']
+		attributes: ['password', 'salt']
 	});
-	const user = await $DB.user.findByPk(room.userId, {
-		attributes: ['salt']
-	})
-	const verify = pwLib.verifyPassword(password, user.salt, room.password);
+
+	const verify = pwLib.verifyPassword(password, room.salt, room.password);
 	return verify;
 }
 

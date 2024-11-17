@@ -14,7 +14,7 @@
           v-model="splitterModel2"
           style="height: calc(100vh - 192px)"
           unit="px"
-          :limits="[50, 200]"
+          :limits="[50, 300]"
           reverse
         >
           <template #before>
@@ -73,7 +73,7 @@ export default defineComponent({
   data() {
     return {
       splitterModel: 300,
-      splitterModel2: 200,
+      splitterModel2: 300,
       curRoomId: "",
     };
   },
