@@ -3,12 +3,16 @@ module.exports = (sequelize, DataTypes) => {
 		name: DataTypes.STRING,
 		desc: DataTypes.STRING,
 		password: DataTypes.STRING,
-		// userId: DataTypes.STRING,
-		category:DataTypes.STRING,
+		salt: DataTypes.STRING,
+		category: DataTypes.STRING,
+		used: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		}
 	}, {
 		freezeTableName: true,
 	});
-	rooms.associate = function(models) {
+	rooms.associate = function (models) {
 		models.user.hasMany(models.rooms);
 		models.rooms.belongsTo(models.user);
 	};

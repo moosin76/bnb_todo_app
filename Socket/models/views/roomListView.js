@@ -5,7 +5,7 @@ a.category, a.createdAt, a.userId,
 b.userName, b.nickName,
 (SELECT COUNT(*) AS cnt FROM chatUsers WHERE roomId=a.id) AS userCnt
  FROM rooms AS a
-LEFT JOIN user AS b ON a.userId = b.id`;
+LEFT JOIN user AS b ON userId = b.id`;
 module.exports = async (sequelize, Datatypes) => {
 	await sequelize.query(`DROP VIEW IF EXISTS ${viewName}`);
 	await sequelize.query(`CREATE VIEW ${viewName} AS ${query}`);
