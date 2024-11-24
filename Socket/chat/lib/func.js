@@ -10,7 +10,8 @@ const getRoomIds = async (userId) => {
 const getRoomName = (roomId) => `room-${roomId}`;
 
 const joinChatRoom = async (socket, roomId) => {
-	socket.join(getRoomName(roomId));
+	const roomName = getRoomName(roomId);
+	socket.join(roomName);
 
 	const [room, users] = await Promise.all([
 		$DB.rooms.findByPk(roomId, { attributes: ['id', 'name', 'category', 'userId', 'desc'] }),

@@ -4,10 +4,10 @@
       <q-icon name="mdi-circle" :color="statusColor"></q-icon>
     </q-item-section>
     <q-item-section>
-      <q-item-label overline>{{ user.role }} {{ myRole }}</q-item-label>
+      <q-item-label overline>{{ user.role }}</q-item-label>
       <q-item-label>{{ user.nickName }}</q-item-label>
     </q-item-section>
-    <q-item-section v-if="useSetting" side>
+    <!-- <q-item-section v-if="useSetting" side>
       <q-btn icon="mdi-cog" dense round flat>
         <q-menu>
           <q-list>
@@ -17,7 +17,7 @@
           </q-list>
         </q-menu>
       </q-btn>
-    </q-item-section>
+    </q-item-section> -->
   </q-item>
 </template>
 

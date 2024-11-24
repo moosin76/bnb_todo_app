@@ -74,7 +74,25 @@ export default defineComponent({
       return this.users.filter((user) => user.role == "Block");
     },
     useUsers() {
-      return this.users.filter((user) => user.role != "Block");
+      const nonBlockUsers = this.users.filter((user) => user.role != "Block");
+      const me = nonBlockUsers.find((user) => user.userId == this.user.id);
+      const masters = nonBlockUsers.find(
+        (user) => user.role == "Master" && user.userId != this.user.id
+      );
+      const manager = nonBlockUsers.filter(
+        (user) => user.role == "Manager" && user.userId != this.user.id
+      );
+      const users = nonBlockUsers.filter(
+        (user) => user.role == "User" && user.userId != this.user.id
+      );
+
+      if (masters) {
+        // console.log([me, masters, ...manager, ...users]);
+        return [me, masters, ...manager, ...users];
+      } else {
+        // console.log([me, ...manager, ...users]);
+        return [me, ...manager, ...users];
+      }
     },
     myRole() {
       // 내 역활
@@ -87,8 +105,8 @@ export default defineComponent({
       }
     },
     isAdmin() {
-      return this.myRole == 'Master' || this.myRole == 'Manager';
-    }
+      return this.myRole == "Master" || this.myRole == "Manager";
+    },
   },
   methods: {},
 });

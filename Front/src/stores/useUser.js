@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 // import userApi from 'src/apis/userApi';
 import { socket } from 'src/boot/socket';
+import useChat from './useChat';
 
 export default defineStore('useUser', {
 	state: () => ({
@@ -20,6 +21,8 @@ export default defineStore('useUser', {
 		logout() {
 			this.user = null;
 			socket.disconnect();
+      const userStore = useChat();
+      userStore.initRooms([]);
 		}
 	},
 });
