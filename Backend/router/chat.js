@@ -14,7 +14,7 @@ router.post('/room', isUser, $API_CALL(async (ctx) => {
 
 router.post('/room-auth/:id', isUser, $API_CALL(async (ctx) => {
 	const roomId = ctx.params.id;
-	const {password} = ctx.request.body;
+	const { password } = ctx.request.body;
 	const data = await chatCtrl.roomAuth(roomId, password);
 	return data;
 }))
@@ -22,6 +22,13 @@ router.post('/room-auth/:id', isUser, $API_CALL(async (ctx) => {
 router.get('/room/:id', isUser, $API_CALL(async (ctx) => {
 	const roomId = ctx.params.id;
 	const data = await chatCtrl.getRoom(roomId, ctx.user);
+	return data;
+}))
+
+router.put('/room/:id/password', isUser, $API_CALL(async (ctx) => {
+	const password = ctx.request.body.password;
+	const roomId = ctx.params.id;
+	const data = await chatCtrl.chagePassword(roomId, password);
 	return data;
 }))
 

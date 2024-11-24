@@ -46,7 +46,20 @@ const leaveRoom = (roomId) => {
   })
 }
 
+const roleChange = (roomId, userId, role) => {
+  return new Promise((resolve, reject) => {
+    socket.emit("user:role", roomId, userId, role, (data) => {
+      if (data && data.success == true) {
+        resolve(true)
+      } else {
+        reject(data.msg);
+      }
+    })
+  })
+}
+
 export default {
   sendMessage, sendFile,
-  addRoom, leaveRoom
+  addRoom, leaveRoom,
+  roleChange,
 }

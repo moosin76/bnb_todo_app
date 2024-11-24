@@ -1,23 +1,23 @@
 const pwLib = require('../lib/pwLib');
-const { Op, literal } = require('sequelize');
+const { Op, literal, where } = require('sequelize');
 const getOffsetAndLimit = require('../lib/getOffsetAndLimit');
 const fs = require('fs');
 
 const createRoom = async (form, user) => {
 
-/*
-name : 클라이언트 <
-desc : "" < 
-password : 있으면 암호화 <
-salt : 암호화 하려면 생성
-category : 클라 <
-used : 기본 true,
-userId : 개설자 // 마스터로 유지 하자
-*/
+	/*
+	name : 클라이언트 <
+	desc : "" < 
+	password : 있으면 암호화 <
+	salt : 암호화 하려면 생성
+	category : 클라 <
+	used : 기본 true,
+	userId : 개설자 // 마스터로 유지 하자
+	*/
 
 	const payload = {
 		...form,
-		userId: user.id 
+		userId: user.id
 	}
 
 
@@ -132,8 +132,20 @@ const roomAuth = async (roomId, password) => {
 	return verify;
 }
 
+const chagePassword = async (roomId, text) => {
+	//TODO: ctx.user.id == chatUser.userId role확인
+
+	const hashed = pwLib.createHashed(text);
+	// console.log(roomId, text, hashed);
+	const password = hashed.hashed;
+	const salt = hashed.salt;
+
+	const [cnt] = await $DB.rooms.update({ password, salt }, { where: { id: roomId } })
+	return cnt == 1;
+}
+
 module.exports = {
 	createRoom, getRoom, roomList,
 	createUser, getRoomMessages,
-	fileUpload, roomAuth
+	fileUpload, roomAuth, chagePassword
 }

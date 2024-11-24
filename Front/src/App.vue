@@ -22,11 +22,16 @@ export default defineComponent({
       "chat:message": (message) => {
         chatStore.addMessage(message);
       },
-      "room:connect": (roomId, userId, connected) => { // 유저의 접속여부
+      "room:connect": (roomId, userId, connected) => {
+        // 유저의 접속여부
         chatStore.userConnect(roomId, userId, connected);
       },
-      "room:leave": (roomId, userId) => { // 방 나가기
+      "room:leave": (roomId, userId) => {
+        // 방 나가기
         chatStore.userLeave(roomId, userId);
+      },
+      "user:role": (roomId, userId, role) => {
+        chatStore.userRoleChange(roomId, userId, role);
       },
     });
   },

@@ -2,6 +2,7 @@ const io = $IO.of('/chat');
 const { getRoomIds, joinChatRoom, getRoomName } = require('./lib/func');
 const roomHandler = require('./handlers/roomHandler');
 const chatHandler = require('./handlers/chatHandler');
+const userHandler = require('./handlers/userHandler');
 
 io.use((socket, next) => {
 	const userId = socket.handshake.auth.userId;
@@ -16,6 +17,7 @@ io.on("connection", async (socket) => {
 	// 핸들러 등록
 	roomHandler(io, socket);
 	chatHandler(io, socket);
+	userHandler(io, socket);
 
 	console.log(socket.userId, socket.id);
 	// fetch existing users

@@ -1,7 +1,14 @@
+const { Op } = require('sequelize');
+
 const getRoomIds = async (userId) => {
 	const data = await $DB.chatUsers.findAll({
 		attributes: ['roomId'],
-		where: { userId }
+		where: {
+			userId,
+			[Op.not]: {
+				role: 'Block'
+			}
+		}
 	})
 	const rooms = data.map(room => room.roomId)
 	return rooms;

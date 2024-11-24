@@ -11,7 +11,7 @@
             <q-item clickable @click="showMemberList">
               <q-item-section>회원관리</q-item-section>
             </q-item>
-            <q-item>
+            <q-item clickable @click="changPassword">
               <q-item-section>비밀번호 변경</q-item-section>
             </q-item>
             <q-item v-if="myRole == 'Master'">
@@ -29,6 +29,7 @@ import { mapState } from "pinia";
 import { defineComponent } from "vue";
 import useUser from "stores/useUser";
 import AdmUserList from "components/chat/admin/AdmUserList.vue";
+import chatApi from "src/apis/chatApi";
 
 export default defineComponent({
   name: "RoomItem",
@@ -63,16 +64,53 @@ export default defineComponent({
           );
           break;
       }
-      this.$q.dialog({
-        component: AdmUserList,
-        componentProps: {
-          rows: rows,
-          role: this.myRole,
-        },
-        persistent: true,
-      }).onOk(()=>{
-        console.log('ok');
-      });
+      this.$q
+        .dialog({
+          component: AdmUserList,
+          componentProps: {
+            rows: rows,
+            role: this.myRole,
+          },
+          persistent: true,
+        })
+        .onOk(() => {
+          console.log("ok");
+        });
+    },
+    changPassword() {
+      this.$q
+        .dialog({
+          title: "비밀번호 변경",
+          message: "새로운 비밀번호를 입력하세요.",
+          prompt: {
+            model: "",
+            type: "password", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async (password) => {
+          // console.log(this.room.id, password);
+          if (!password) {
+            this.$q.notify({
+              type: "negative",
+              message: `비밀번호는 필수 입력입니다.`,
+            });
+            return;
+          }
+          const data = await chatApi.changePassword(this.room.id, password);
+          if (data) {
+            this.$q.notify({
+              type: "info",
+              message: `비밀번호가 변경되었습니다.`,
+            });
+          } else {
+            this.$q.notify({
+              type: "negative",
+              message: `비밀번호 변경 실패`,
+            });
+          }
+        });
     },
   },
 });

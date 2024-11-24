@@ -1,5 +1,5 @@
 module.exports = async (ctx, next) => {
-	console.log("isLogin?", ctx.user)
+	// console.log("isLogin?", ctx.user)
 	if (ctx.user) {
 		await next();
 	} else {

@@ -31,6 +31,9 @@
 
 <script>
 import { defineComponent } from "vue";
+import socketApi from "src/apis/socketApi";
+import useChat from "src/stores/useChat";
+import { mapActions } from "pinia";
 
 export default defineComponent({
   name: "AdmUserList",
@@ -92,13 +95,14 @@ export default defineComponent({
     roleOptions() {
       switch (this.role) {
         case "Master":
-          return ["Manger", "User", "Block"];
+          return ["Manager", "User", "Block"];
         case "Manager":
           return [, "User", "Block"];
       }
     },
   },
   methods: {
+    ...mapActions(useChat, ["userRoleChange"]),
     show() {
       this.$refs.dialog.show();
     },
@@ -124,10 +128,30 @@ export default defineComponent({
           message: `${user.userName}님의 역활을 ${value}로 변경하시겠습니까?`,
           cancel: true,
         })
-        .onOk(() => {
-          console.log("변경 확인!!!")
+        .onOk(async () => {
+          console.log("변경 확인!!!");
           //TODO: 변경 할거 확인 거치고
           // socket 서버에 변경을 요청하고
+          // roomId userId role -> DB 업데이트하고, 다른 룸에 변경 알림
+          try {
+            const data = await socketApi.roleChange(
+              user.roomId,
+              user.userId,
+              value
+            );
+            if (data) {
+              this.userRoleChange(user.roomId, user.userId, value);
+              this.$q.notify({
+                type: "info",
+                message: `${user.userName}님의 역활을 ${value}로 변경하였습니다.`,
+              });
+            }
+          } catch (msg) {
+            this.$q.notify({ type: "negative", message: msg });
+          }
+
+          // 변경 알림 오면 변경해주는데.
+          // 일단 Block 이 팅겨야됨!!
         });
     },
   },

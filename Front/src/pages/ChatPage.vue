@@ -83,6 +83,21 @@ export default defineComponent({
     curRoom() {
       return this.rooms.find((room) => room.id == this.curRoomId);
     },
+    curMyrole() {
+      if (this.curRoom) {
+        const me = this.curRoom.users.find(
+          (user) => user.userId == this.user.id
+        );
+        return me.role;
+      }
+    },
+  },
+  watch: {
+    curMyrole() {
+      if (this.curMyrole == "Block") {
+        this.curRoom = null;
+      }
+    },
   },
   methods: {
     ...mapActions(useChat, ["addMessage", "roomLeave"]),

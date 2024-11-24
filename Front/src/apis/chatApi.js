@@ -28,9 +28,15 @@ const roomAuth = async (roomId, password) => {
   return data;
 }
 
+const changePassword = async (roomId, password) => {
+  const { data } = await api.put(`${URL}/room/${roomId}/password`, { password });
+  return data;
+}
+
 export default {
   createRoom, roomList,
   addChatUser,
   getRoomMessages,
   roomAuth,
+  changePassword,
 }
