@@ -110,6 +110,7 @@ export default defineComponent({
       }
       return arr;
     },
+    roleOptions() {
       switch (this.role) {
         case "Master":
           return ["Manager", "User", "Block"];
