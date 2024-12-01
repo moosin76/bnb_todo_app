@@ -8,7 +8,12 @@
       </q-card-section>
       <q-card-section>
         <q-table :rows="rows" :columns="columns">
-          <template #body-cell-role="props">
+          <template v-if="delegate" #body-cell-cmd="props">
+            <q-td :props="props">
+              <q-btn @click="masterChange(props.row)" dense>방장 위임</q-btn>
+            </q-td>
+          </template>
+          <template v-else #body-cell-role="props">
             <q-td :props="props">
               <q-select
                 :model-value="props.value"
@@ -41,10 +46,14 @@ export default defineComponent({
   props: {
     rows: { type: Array, required: true },
     role: { type: String, required: true },
+    delegate: { type: Boolean, default: false }, // true 면 역활 아니고 위임으로 쓰자
   },
   data() {
-    return {
-      columns: [
+    return {};
+  },
+  computed: {
+    columns() {
+      const arr = [
         {
           name: "userId",
           label: "ID",
@@ -88,11 +97,19 @@ export default defineComponent({
               : "bg-red text-white";
           },
         },
-      ],
-    };
-  },
-  computed: {
-    roleOptions() {
+      ];
+
+      if (this.delegate) {
+        // 위임 이면 명령 필드 추가
+        arr.push({
+          name: "cmd",
+          label: "위임",
+          align: "center",
+          sortable: false,
+        });
+      }
+      return arr;
+    },
       switch (this.role) {
         case "Master":
           return ["Manager", "User", "Block"];
@@ -120,7 +137,7 @@ export default defineComponent({
       this.hide();
     },
     roleChange(value, user) {
-      console.log(value, user);
+      // console.log(value, user);
 
       this.$q
         .dialog({
@@ -154,9 +171,12 @@ export default defineComponent({
           // 일단 Block 이 팅겨야됨!!
         });
     },
+    masterChange(user) {
+      console.log(user);
+    },
   },
   mounted() {
-    console.log(this.role, this.roleOptions);
+    // console.log(this.role, this.roleOptions);
   },
 });
 </script>

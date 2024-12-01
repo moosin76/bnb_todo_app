@@ -14,7 +14,7 @@
             <q-item clickable @click="changPassword">
               <q-item-section>비밀번호 변경</q-item-section>
             </q-item>
-            <q-item v-if="myRole == 'Master'">
+            <q-item v-if="myRole == 'Master'" clickable @click="showManagerList" >
               <q-item-section>방 위임</q-item-section>
             </q-item>
           </q-list>
@@ -110,6 +110,23 @@ export default defineComponent({
               message: `비밀번호 변경 실패`,
             });
           }
+        });
+    },
+    showManagerList() {
+      let rows = this.room.users.filter((user) => user.role == 'Manager' );
+
+      this.$q
+        .dialog({
+          component: AdmUserList,
+          componentProps: {
+            rows: rows,
+            role: this.myRole,
+            delegate: true,
+          },
+          persistent: true,
+        })
+        .onOk(() => {
+          console.log("ok");
         });
     },
   },
