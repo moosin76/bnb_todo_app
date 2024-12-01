@@ -38,7 +38,8 @@
 import { defineComponent } from "vue";
 import socketApi from "src/apis/socketApi";
 import useChat from "src/stores/useChat";
-import { mapActions } from "pinia";
+import useUser from "src/stores/useUser";
+import { mapActions, mapState } from "pinia";
 
 export default defineComponent({
   name: "AdmUserList",
@@ -52,6 +53,9 @@ export default defineComponent({
     return {};
   },
   computed: {
+    ...mapState(useUser, {
+      me: (store) => store.user,
+    }),
     columns() {
       const arr = [
         {
@@ -173,7 +177,37 @@ export default defineComponent({
         });
     },
     masterChange(user) {
-      console.log(user);
+      this.$q
+        .dialog({
+          title: "방장 위임",
+          message: `${user.userName}님을 방장으로 하시겠습니까?<br/>방장을 위힘하면 Manager권한으로 변경됩니다.`,
+          cancel: true,
+          persistent: true,
+          html: true,
+        })
+        .onOk(async () => {
+          const MASTER = "Master";
+          const MANAGER = "Manager";
+          try {
+            // 상대방 마스터 승격
+            const [data1, data2] = await Promise.all([
+              socketApi.roleChange(user.roomId, user.userId, MASTER),
+              socketApi.roleChange(user.roomId, this.me.id, MANAGER),
+            ]);
+
+            if (data1 && data2) {
+              this.userRoleChange(user.roomId, user.userId, MASTER);
+              this.userRoleChange(user.roomId, this.me.id, MANAGER);
+              this.$q.notify({
+                type: "info",
+                message: `${user.userName}님이 새로운 방장이 되었습니다.`,
+              });
+              this.onOKClick();
+            }
+          } catch (msg) {
+            this.$q.notify({ type: "negative", message: msg });
+          }
+        });
     },
   },
   mounted() {
