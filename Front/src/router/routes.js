@@ -3,8 +3,8 @@ const routes = [
 		path: '/',
 		component: () => import('layouts/BlankLayout.vue'),
 		children: [
-			{ name: 'help', path: '', component: () => import('pages/HelpPage.vue') },
-		]
+      { name: 'help', path: '', component: () => import('pages/HelpPage.vue') },
+    ]
 	},
 	{
 		path: '/memeber',
@@ -15,6 +15,7 @@ const routes = [
 		children: [
 			{ name: 'todo', path: 'todo', component: () => import('pages/TodoPage.vue') },
 			{ name: 'chat', path: 'chat', component: () => import('pages/ChatPage.vue') },
+      { name: 'news', path: 'news', component: () => import('pages/NewsPage.vue') },
 		]
 	},
 	{

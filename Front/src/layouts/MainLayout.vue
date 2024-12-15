@@ -124,6 +124,11 @@ export default defineComponent({
           label: "Chat",
           icon: "mdi-chat-processing-outline",
         },
+        {
+          to: { name: "news" },
+          label: "News",
+          icon: "mdi-newspaper-variant-outline",
+        },
       ],
     };
   },

@@ -55,3 +55,6 @@ app.use(require('./middleware/NotFound'));
 app.listen(PORT, () => {
 	console.log(`http://server.bnb.com:${PORT}`);
 });
+
+// 크론
+require('./cron/news');

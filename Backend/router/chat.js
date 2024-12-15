@@ -88,8 +88,6 @@ router.get('/file/:id/:name', async ctx => {
 			throw new Error('File not found');
 		}
 
-
-
 		console.log("file type", w, h, contents);
 		let path;
 		if ((w || h) && (contents.type == 'image/jpeg' || contents.type == 'image/png')) {
