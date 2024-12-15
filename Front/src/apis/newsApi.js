@@ -12,18 +12,19 @@ const list = async (params) => {
 }
 
 const columns = [
-  { name: 'img', label: "이미지", field: 'img', sortable: false },
-  { name: 'title', label: "제목", field: 'title', sortable: true },
-  { name: 'content', label: "내용", field: 'content', sortable: true },
-  { name: 'time', label: "시간", field: 'time', sortable: true },
+  { name: 'img', label: "이미지", field: 'img', sortable: false, align: 'center', },
+  { name: 'title', label: "제목", field: 'title', sortable: true, align: 'left' },
+  // { name: 'content', label: "내용", field: 'content', sortable: true },
+  { name: 'time', label: "시간", field: 'time', sortable: true, align: "center" },
 ]
 
 const pagination = {
-  rowsPerPage: 10,
+  rowsPerPage: 12,
   page: 1,
   sortBy: 'time',
   descending: false,
-  rowsNumber: 0 // 서버 사이드
+  rowsNumber: 0, // 서버 사이드
+  search: "",
 }
 
 export default {
